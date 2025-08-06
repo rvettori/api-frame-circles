@@ -23,18 +23,5 @@ FactoryBot.define do
     center_x { 5.0 }
     center_y { 7.5 }
     radius { 2.5 }
-
-    trait :large do
-      radius { 10.0 }
-    end
-
-    trait :small do
-      radius { 0.5 }
-    end
-
-    trait :at_origin do
-      center_x { 0.0 }
-      center_y { 0.0 }
-    end
   end
 end
