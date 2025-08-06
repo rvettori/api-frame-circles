@@ -1,6 +1,12 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
+AllCops:
+  NewCops: disable
+
+plugins:
+  - rubocop-rspec
+
 # Overwrite or add rules to create your own house style
 #
 # # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
@@ -11,3 +17,23 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 Style/FrozenStringLiteralComment:
   Enabled: true
   EnforcedStyle: always
+
+# Force the use of 'when' in RSpec contexts
+RSpec/ContextWording:
+  Enabled: true
+  Prefixes:
+    - when
+    - with
+    - without
+
+# New cops added to RuboCop RSpec
+RSpec/IncludeExamples:
+  Enabled: true
+
+# Allow deeper nesting in RSpec example groups
+RSpec/NestedGroups:
+  Max: 4
+
+# Allow multiple expectations per example
+RSpec/MultipleExpectations:
+  Max: 2
