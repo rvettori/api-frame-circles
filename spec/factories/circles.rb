@@ -20,8 +20,8 @@
 FactoryBot.define do
   factory :circle do
     association :frame
-    center_x { 5.0 }
-    center_y { 7.5 }
-    radius { 2.5 }
+    center_x { 10.0 }
+    center_y { 10.0 }
+    radius { 2.0 }
   end
 end

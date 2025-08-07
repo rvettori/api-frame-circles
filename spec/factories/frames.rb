@@ -16,13 +16,15 @@
 FactoryBot.define do
   factory :frame do
     center_x { 15.0 }
-    center_y { 20.0 }
-    height { 10.0 }
-    width { 12.0 }
+    center_y { 15.0 }
+    height { 20.0 }
+    width { 20.0 }
 
     trait :with_circles do
       after(:create) do |frame|
-        create_list(:circle, 3, frame: frame)
+        create(:circle, frame: frame, center_x: 10.0, center_y: 10.0, radius: 2.0)
+        create(:circle, frame: frame, center_x: 20.0, center_y: 20.0, radius: 2.0)
+        create(:circle, frame: frame, center_x: 15.0, center_y: 7.0, radius: 1.5)
       end
     end
   end
