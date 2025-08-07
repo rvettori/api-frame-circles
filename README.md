@@ -4,6 +4,8 @@ This project includes Docker Compose configuration for running in containers wit
 
 Tested and executed with podman-compose however both follow the same specification and should work with docker-compose
 
+See api docs: https://api-frame-circles.apps.indicadorderesultado.com.br/api-docs
+
 ## Prerequisites
 
 - Docker or Podman
