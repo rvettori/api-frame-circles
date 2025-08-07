@@ -1,28 +1,28 @@
 # frozen_string_literal: true
 
 class CirclesController < ApplicationController
-  before_action :set_circle, only: %i[ show destroy ]
-  before_action :set_frame, only: %i[ create ]
+  before_action :set_circle, only: %i[ update destroy ]
 
   # GET /frames/:frame_id/circles
   def index
-    @frame = Frame.find(params[:frame_id])
-    @circles = @frame.circles
-    render json: CircleBlueprint.render(@circles)
+    if params[:center_x].present? && params[:center_y].present? && params[:radius].present? && params[:frame_id].present?
+      center_x = params[:center_x].to_f
+      center_y = params[:center_y].to_f
+      radius = params[:radius].to_f
+      frame_id = params[:frame_id].to_i
+
+      @circles = Circle.within_circle(center_x, center_y, radius, frame_id)
+
+      render json: CircleBlueprint.render(@circles)
+    else
+      render json: []
+    end
   end
 
-  # GET /circles/1
-  def show
-    render json: CircleBlueprint.render(@circle, view: :detailed)
-  end
-
-  # POST /frames/:frame_id/circles
-  def create
-    @circle = @frame.circles.build(circle_params)
-
-    if @circle.save
-      render json: CircleBlueprint.render(@circle, view: :detailed),
-             status: :created
+  # PATCH/PUT /circles/1
+  def update
+    if @circle.update(circle_params)
+      render json: CircleBlueprint.render(@circle)
     else
       render json: @circle.errors, status: :unprocessable_content
     end

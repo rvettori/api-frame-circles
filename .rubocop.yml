@@ -37,3 +37,7 @@ RSpec/NestedGroups:
 # Allow multiple expectations per example
 RSpec/MultipleExpectations:
   Max: 2
+
+# Allow multiple memoized helpers (let/let!) in RSpec example groups
+RSpec/MultipleMemoizedHelpers:
+  Max: 8

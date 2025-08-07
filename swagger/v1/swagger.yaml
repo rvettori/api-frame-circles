@@ -4,6 +4,115 @@ info:
   title: API V1
   version: v1
 paths:
+  "/circles":
+    get:
+      summary: list circles within a search circle
+      tags:
+      - Circles
+      description: Returns circles that are completely within the specified search
+        circle
+      parameters:
+      - name: center_x
+        in: query
+        description: X coordinate of search circle center
+        required: true
+        schema:
+          type: number
+      - name: center_y
+        in: query
+        description: Y coordinate of search circle center
+        required: true
+        schema:
+          type: number
+      - name: radius
+        in: query
+        description: Radius of search circle
+        required: true
+        schema:
+          type: number
+      - name: frame_id
+        in: query
+        description: ID of the frame to search within
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful - empty result when missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/circles_within_response"
+  "/circles/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Circle ID
+      required: true
+      schema:
+        type: integer
+    put:
+      summary: update circle
+      tags:
+      - Circles
+      description: Updates a specific circle by ID
+      parameters: []
+      responses:
+        '200':
+          description: successful update
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/circle_response"
+        '422':
+          description: unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/circle_update_error_response"
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/not_found_response"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/circle_update_request"
+    patch:
+      summary: update circle
+      tags:
+      - Circles
+      description: Updates a specific circle by ID
+      parameters: []
+      responses:
+        '200':
+          description: successful update
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/circle_response"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/circle_update_request"
+    delete:
+      summary: destroy circle
+      tags:
+      - Circles
+      description: Deletes a specific circle by ID
+      responses:
+        '204':
+          description: successful deletion
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/not_found_response"
   "/frames/{id}":
     parameters:
     - name: id
@@ -435,3 +544,70 @@ components:
           - Cannot delete record because dependent circles exist
       required:
       - base
+    circle_response:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        center_x:
+          type: string
+          example: '10.0'
+        center_y:
+          type: string
+          example: '10.0'
+        radius:
+          type: string
+          example: '2.0'
+        frame_id:
+          type: integer
+          example: 1
+      required:
+      - id
+      - center_x
+      - center_y
+      - radius
+      - frame_id
+    circles_within_response:
+      type: array
+      items:
+        "$ref": "#/components/schemas/circle_response"
+    circle_update_request:
+      type: object
+      properties:
+        circle:
+          type: object
+          properties:
+            center_x:
+              type: number
+              format: decimal
+              example: 12.0
+            center_y:
+              type: number
+              format: decimal
+              example: 12.0
+            radius:
+              type: number
+              format: decimal
+              example: 3.0
+      required:
+      - circle
+    circle_update_error_response:
+      type: object
+      properties:
+        base:
+          type: array
+          items:
+            type: string
+        center_x:
+          type: array
+          items:
+            type: string
+        center_y:
+          type: array
+          items:
+            type: string
+        radius:
+          type: array
+          items:
+            type: string

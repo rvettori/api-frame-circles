@@ -65,4 +65,53 @@ RSpec.describe Circle, type: :model do
       end
     end
   end
+
+  describe 'scopes' do
+    describe '.within_circle' do
+      let(:frame) { create(:frame, center_x: 15.0, center_y: 15.0, width: 30.0, height: 30.0) }
+
+      let!(:circle_close_inside) { create(:circle, frame: frame, center_x: 14.0, center_y: 14.0, radius: 1.0) }
+      let!(:circle_far_inside) { create(:circle, frame: frame, center_x: 18.0, center_y: 18.0, radius: 1.5) }
+      let!(:circle_outside) { create(:circle, frame: frame, center_x: 8.0, center_y: 8.0, radius: 1.0) }
+      let!(:circle_different_frame) { create(:circle, center_x: 14.0, center_y: 14.0, radius: 1.0) }
+
+      context 'when searching for circles within a large circle' do
+        let(:search_circle) { build(:circle, center_x: 15.0, center_y: 15.0, radius: 6.0) }
+
+        it 'returns circles that are completely within the search circle' do # rubocop:disable RSpec/MultipleExpectations
+          result = described_class.within_circle(search_circle.center_x, search_circle.center_y, search_circle.radius, frame.id)
+
+          expect(result).to include(circle_close_inside)
+          expect(result).to include(circle_far_inside)
+          expect(result).not_to include(circle_outside)
+          expect(result).not_to include(circle_different_frame)
+        end
+      end
+
+      context 'when searching for circles within a small circle' do
+        let(:search_circle_x) { 14.0 }
+        let(:search_circle_y) { 14.0 }
+        let(:search_circle_radius) { 2.0 }
+
+        it 'returns only circles that fit completely within the small search circle' do # rubocop:disable RSpec/MultipleExpectations
+          result = described_class.within_circle(search_circle_x, search_circle_y, search_circle_radius, frame.id)
+
+          expect(result).to include(circle_close_inside)
+          expect(result).not_to include(circle_far_inside)
+          expect(result).not_to include(circle_outside)
+          expect(result).not_to include(circle_different_frame)
+        end
+      end
+
+      context 'when no circles exist in the frame' do
+        let(:empty_frame) { create(:frame, center_x: 50.0, center_y: 50.0, width: 30.0, height: 30.0) }
+
+        it 'returns empty result' do
+          result = described_class.within_circle(50.0, 50.0, 10.0, empty_frame.id)
+
+          expect(result).to be_empty
+        end
+      end
+    end
+  end
 end

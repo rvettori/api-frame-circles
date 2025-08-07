@@ -209,6 +209,58 @@ RSpec.configure do |config|
               }
             },
             required: %w[base]
+          },
+          circle_response: {
+            type: :object,
+            properties: {
+              id: { type: :integer, example: 1 },
+              center_x: { type: :string, example: '10.0' },
+              center_y: { type: :string, example: '10.0' },
+              radius: { type: :string, example: '2.0' },
+              frame_id: { type: :integer, example: 1 }
+            },
+            required: %w[id center_x center_y radius frame_id]
+          },
+          circles_within_response: {
+            type: :array,
+            items: {
+              "$ref": "#/components/schemas/circle_response"
+            }
+          },
+          circle_update_request: {
+            type: :object,
+            properties: {
+              circle: {
+                type: :object,
+                properties: {
+                  center_x: { type: :number, format: :decimal, example: 12.0 },
+                  center_y: { type: :number, format: :decimal, example: 12.0 },
+                  radius: { type: :number, format: :decimal, example: 3.0 }
+                }
+              }
+            },
+            required: %w[circle]
+          },
+          circle_update_error_response: {
+            type: :object,
+            properties: {
+              base: {
+                type: :array,
+                items: { type: :string }
+              },
+              center_x: {
+                type: :array,
+                items: { type: :string }
+              },
+              center_y: {
+                type: :array,
+                items: { type: :string }
+              },
+              radius: {
+                type: :array,
+                items: { type: :string }
+              }
+            }
           }
         }
       }

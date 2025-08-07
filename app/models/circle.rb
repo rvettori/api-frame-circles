@@ -27,6 +27,13 @@ class Circle < ApplicationRecord
   validate :validate_circle_inside_frame
   validate :validate_circle_collision
 
+  scope :within_circle, ->(circle_x, circle_y, circle_radius, frame_id) {
+    where(frame_id: frame_id).select do |circle|
+      distance = Math.sqrt((circle.center_x - circle_x)**2 + (circle.center_y - circle_y)**2)
+      distance + circle.radius <= circle_radius
+    end
+  }
+
   private
 
   def distance_between_points(x1, y1, x2, y2)
