@@ -15,6 +15,7 @@
 
 class Frame < ApplicationRecord
   has_many :circles, dependent: :restrict_with_error
+  accepts_nested_attributes_for :circles
 
   validates :center_x, :center_y, :height, :width, presence: true
   validates :center_x, numericality: { greater_than_or_equal_to: ->(frame) { frame.width.to_f / 2 } }

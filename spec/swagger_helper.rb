@@ -24,16 +24,193 @@ RSpec.configure do |config|
       paths: {},
       servers: [
         {
-          url: 'https://{defaultHost}',
+          url: 'http://{defaultHost}',
           variables: {
             defaultHost: {
-              default: 'www.example.com'
+              default: ENV.fetch('SWAGGER_HOST', 'localhost:3000')
             }
           }
         }
       ],
       components: {
-        schemas: {}
+        schemas: {
+          frame_response: {
+            type: :object,
+               properties: {
+                 id: { type: :integer, example: 1 },
+                 center_x: { type: :decimal, format: 'double', example: 10.0 },
+                 center_y: { type: :decimal, format: 'double', example: 15.0 },
+                 circles_count: { type: :integer, example: 3 },
+                 circle_top_position: {
+                   type: :object,
+                   properties: {
+                     id: { type: :integer, example: 1 },
+                     center_x: { type: :decimal, format: 'double', example: 10.0 },
+                     center_y: { type: :decimal, format: 'double', example: 15.0 }
+                   }
+                 },
+                 circle_down_position: {
+                   type: :object,
+                   properties: {
+                     id: { type: :integer, example: 1 },
+                     center_x: { type: :decimal, format: 'double', example: 10.0 },
+                     center_y: { type: :decimal, format: 'double', example: 15.0 }
+                   }
+                 },
+                 circle_left_position: {
+                   type: :object,
+                   properties: {
+                     id: { type: :integer, example: 1 },
+                     center_x: { type: :decimal, format: 'double', example: 10.0 },
+                     center_y: { type: :decimal, format: 'double', example: 15.0 }
+                   }
+                 },
+                 circle_right_position: {
+                   type: :object,
+                   properties: {
+                     id: { type: :integer, example: 1 },
+                     center_x: { type: :decimal, format: 'double', example: 10.0 },
+                     center_y: { type: :decimal, format: 'double', example: 15.0 }
+                   }
+                 }
+               },
+               required: %w[id center_x center_y circles_count]
+          },
+          frame_create_response: {
+            type: :object,
+            properties: {
+              id: { type: :integer },
+              center_x: { type: :decimal, format: 'double', example: 15.0 },
+              center_y: { type: :decimal, format: 'double', example: 15.0 },
+              height: { type: :decimal, format: 'double', example: 20.0 },
+              width: { type: :decimal, format: 'double', example: 20.0 },
+              circles_count: { type: :integer },
+                 circle_top_position: {
+                   anyOf: [
+                     { type: :null },
+                     {
+                       type: :object,
+                       properties: {
+                         id: { type: :integer, example: 1 },
+                         center_x: { type: :decimal, format: 'double', example: 10.0 },
+                         center_y: { type: :decimal, format: 'double', example: 15.0 }
+                       }
+                     }
+                   ]
+                 },
+                 circle_down_position: {
+                   anyOf: [
+                     { type: :null },
+                     {
+                       type: :object,
+                       properties: {
+                         id: { type: :integer, example: 1 },
+                         center_x: { type: :decimal, format: 'double', example: 10.0 },
+                         center_y: { type: :decimal, format: 'double', example: 15.0 }
+                       }
+                     }
+                   ]
+                 },
+                 circle_left_position: {
+                   anyOf: [
+                     { type: :null },
+                     {
+                       type: :object,
+                       properties: {
+                         id: { type: :integer, example: 1 },
+                         center_x: { type: :decimal, format: 'double', example: 10.0 },
+                         center_y: { type: :decimal, format: 'double', example: 15.0 }
+                       }
+                     }
+                   ]
+                 },
+                 circle_right_position: {
+                   anyOf: [
+                     { type: :null },
+                     {
+                       type: :object,
+                       properties: {
+                         id: { type: :integer, example: 1 },
+                         center_x: { type: :decimal, format: 'double', example: 10.0 },
+                         center_y: { type: :decimal, format: 'double', example: 15.0 }
+                       }
+                     }
+                   ]
+                 }
+            },
+            required: %w[id center_x center_y height width circles_count]
+          },
+          frame_create_request: {
+            type: :object,
+            properties: {
+              frame: {
+                type: :object,
+                properties: {
+                  center_x: { type: :number, format: :decimal, example: 15.0 },
+                  center_y: { type: :number, format: :decimal, example: 15.0 },
+                  height: { type: :number, format: :decimal, example: 20.0 },
+                  width: { type: :number, format: :decimal, example: 20.0 },
+                  circles_attributes: {
+                    type: :array,
+                    items: {
+                      type: :object,
+                      properties: {
+                        center_x: { type: :number, format: :decimal, example: 10.0 },
+                        center_y: { type: :number, format: :decimal, example: 10.0 },
+                        radius: { type: :number, format: :decimal, example: 2.0 }
+                      },
+                      required: %w[center_x center_y radius]
+                    }
+                  }
+                },
+                required: %w[center_x center_y height width]
+              }
+            },
+            required: %w[frame]
+          },
+          frame_create_error_response: {
+            type: :object,
+            properties: {
+              base: {
+                type: :array,
+                items: { type: :string }
+              },
+              center_x: {
+                type: :array,
+                items: { type: :string }
+              },
+              center_y: {
+                type: :array,
+                items: { type: :string }
+              },
+              height: {
+                type: :array,
+                items: { type: :string }
+              },
+              width: {
+                type: :array,
+                items: { type: :string }
+              }
+            }
+          },
+          not_found_response: {
+            type: :object,
+            properties: {
+              error: { type: :string, example: 'Record not found' }
+            }
+          },
+          frame_destroy_error_response: {
+            type: :object,
+            properties: {
+              base: {
+                type: :array,
+                items: { type: :string },
+                example: [ 'Cannot delete record because dependent circles exist' ]
+              }
+            },
+            required: %w[base]
+          }
+        }
       }
     }
   }

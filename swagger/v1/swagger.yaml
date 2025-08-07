@@ -1,0 +1,437 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/frames/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Frame ID
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show frame
+      tags:
+      - Frames
+      description: Retrieves a specific frame by ID
+      responses:
+        '200':
+          description: successful with circles
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/frame_response"
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/not_found_response"
+    delete:
+      summary: destroy frame
+      tags:
+      - Frames
+      description: Deletes a specific frame by ID
+      responses:
+        '204':
+          description: successful deletion
+        '422':
+          description: unprocessable entity - frame has circles
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/frame_destroy_error_response"
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/not_found_response"
+  "/frames":
+    post:
+      summary: create frame
+      tags:
+      - Frames
+      description: Creates a new frame
+      parameters: []
+      responses:
+        '201':
+          description: successful creation with circles
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/frame_create_response"
+        '422':
+          description: unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/frame_create_error_response"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/frame_create_request"
+  "/frames/{id}/circles":
+    parameters:
+    - name: id
+      in: path
+      description: Frame ID
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: create circle for frame
+      tags:
+      - Frames
+      description: Creates a new circle for a specific frame
+      parameters: []
+      responses:
+        '201':
+          description: successful circle creation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  center_x:
+                    type: string
+                  center_y:
+                    type: string
+                  radius:
+                    type: string
+                  frame_id:
+                    type: integer
+        '422':
+          description: unprocessable entity - validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  center_x:
+                    type: array
+                    items:
+                      type: string
+                  center_y:
+                    type: array
+                    items:
+                      type: string
+                  radius:
+                    type: array
+                    items:
+                      type: string
+                  base:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: frame not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                circle:
+                  type: object
+                  properties:
+                    center_x:
+                      type: number
+                      format: float
+                      description: X coordinate of circle center
+                    center_y:
+                      type: number
+                      format: float
+                      description: Y coordinate of circle center
+                    radius:
+                      type: number
+                      format: float
+                      description: Circle radius
+                  required:
+                  - center_x
+                  - center_y
+                  - radius
+              required:
+              - circle
+servers:
+- url: http://{defaultHost}
+  variables:
+    defaultHost:
+      default: localhost:3000
+components:
+  schemas:
+    frame_response:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        center_x:
+          type: decimal
+          format: double
+          example: 10.0
+        center_y:
+          type: decimal
+          format: double
+          example: 15.0
+        circles_count:
+          type: integer
+          example: 3
+        circle_top_position:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            center_x:
+              type: decimal
+              format: double
+              example: 10.0
+            center_y:
+              type: decimal
+              format: double
+              example: 15.0
+        circle_down_position:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            center_x:
+              type: decimal
+              format: double
+              example: 10.0
+            center_y:
+              type: decimal
+              format: double
+              example: 15.0
+        circle_left_position:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            center_x:
+              type: decimal
+              format: double
+              example: 10.0
+            center_y:
+              type: decimal
+              format: double
+              example: 15.0
+        circle_right_position:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            center_x:
+              type: decimal
+              format: double
+              example: 10.0
+            center_y:
+              type: decimal
+              format: double
+              example: 15.0
+      required:
+      - id
+      - center_x
+      - center_y
+      - circles_count
+    frame_create_response:
+      type: object
+      properties:
+        id:
+          type: integer
+        center_x:
+          type: decimal
+          format: double
+          example: 15.0
+        center_y:
+          type: decimal
+          format: double
+          example: 15.0
+        height:
+          type: decimal
+          format: double
+          example: 20.0
+        width:
+          type: decimal
+          format: double
+          example: 20.0
+        circles_count:
+          type: integer
+        circle_top_position:
+          anyOf:
+          - type: 'null'
+          - type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              center_x:
+                type: decimal
+                format: double
+                example: 10.0
+              center_y:
+                type: decimal
+                format: double
+                example: 15.0
+        circle_down_position:
+          anyOf:
+          - type: 'null'
+          - type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              center_x:
+                type: decimal
+                format: double
+                example: 10.0
+              center_y:
+                type: decimal
+                format: double
+                example: 15.0
+        circle_left_position:
+          anyOf:
+          - type: 'null'
+          - type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              center_x:
+                type: decimal
+                format: double
+                example: 10.0
+              center_y:
+                type: decimal
+                format: double
+                example: 15.0
+        circle_right_position:
+          anyOf:
+          - type: 'null'
+          - type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              center_x:
+                type: decimal
+                format: double
+                example: 10.0
+              center_y:
+                type: decimal
+                format: double
+                example: 15.0
+      required:
+      - id
+      - center_x
+      - center_y
+      - height
+      - width
+      - circles_count
+    frame_create_request:
+      type: object
+      properties:
+        frame:
+          type: object
+          properties:
+            center_x:
+              type: number
+              format: decimal
+              example: 15.0
+            center_y:
+              type: number
+              format: decimal
+              example: 15.0
+            height:
+              type: number
+              format: decimal
+              example: 20.0
+            width:
+              type: number
+              format: decimal
+              example: 20.0
+            circles_attributes:
+              type: array
+              items:
+                type: object
+                properties:
+                  center_x:
+                    type: number
+                    format: decimal
+                    example: 10.0
+                  center_y:
+                    type: number
+                    format: decimal
+                    example: 10.0
+                  radius:
+                    type: number
+                    format: decimal
+                    example: 2.0
+                required:
+                - center_x
+                - center_y
+                - radius
+          required:
+          - center_x
+          - center_y
+          - height
+          - width
+      required:
+      - frame
+    frame_create_error_response:
+      type: object
+      properties:
+        base:
+          type: array
+          items:
+            type: string
+        center_x:
+          type: array
+          items:
+            type: string
+        center_y:
+          type: array
+          items:
+            type: string
+        height:
+          type: array
+          items:
+            type: string
+        width:
+          type: array
+          items:
+            type: string
+    not_found_response:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Record not found
+    frame_destroy_error_response:
+      type: object
+      properties:
+        base:
+          type: array
+          items:
+            type: string
+          example:
+          - Cannot delete record because dependent circles exist
+      required:
+      - base
