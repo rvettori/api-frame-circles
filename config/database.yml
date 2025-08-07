@@ -84,5 +84,5 @@ test:
 production:
   <<: *default
   database: api_frame_circles_production
-  username: api_frame_circles
-  password: <%= ENV["API_FRAME_CIRCLES_DATABASE_PASSWORD"] %>
+  # username: api_frame_circles
+  # password: <%= ENV["API_FRAME_CIRCLES_DATABASE_PASSWORD"] %>
