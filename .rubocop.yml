@@ -40,4 +40,4 @@ RSpec/MultipleExpectations:
 
 # Allow multiple memoized helpers (let/let!) in RSpec example groups
 RSpec/MultipleMemoizedHelpers:
-  Max: 8
+  Max: 10

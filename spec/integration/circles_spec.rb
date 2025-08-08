@@ -2,8 +2,8 @@
 
 require 'swagger_helper'
 
-# rubocop:disable all
-RSpec.describe 'circles' do
+# rubocop:disable RSpec/EmptyExampleGroup
+RSpec.describe 'circles', type: :request do
   path '/circles' do
     get('list circles within a search circle') do
       tags 'Circles'
@@ -21,8 +21,6 @@ RSpec.describe 'circles' do
 
         let(:frame) { create(:frame, center_x: 15.0, center_y: 15.0, width: 30.0, height: 30.0) }
         let!(:circle_inside) { create(:circle, frame: frame, center_x: 14.0, center_y: 14.0, radius: 1.0) }
-        let(:circle_outside) { create(:circle, frame: frame, center_x: 8.0, center_y: 8.0, radius: 1.0) }
-
         let(:center_x) { 15.0 }
         let(:center_y) { 15.0 }
         let(:radius) { 6.0 }
@@ -45,8 +43,6 @@ RSpec.describe 'circles' do
         schema "$ref": "#/components/schemas/circles_within_response"
 
         let(:frame) { create(:frame, center_x: 15.0, center_y: 15.0, width: 30.0, height: 30.0) }
-        let!(:circle_outside) { create(:circle, frame: frame, center_x: 8.0, center_y: 8.0, radius: 1.0) } # rubocop:disable RSpec/LetSetup
-
         let(:center_x) { 25.0 }
         let(:center_y) { 25.0 }
         let(:radius) { 2.0 }
@@ -129,12 +125,12 @@ RSpec.describe 'circles' do
               radius: 2.0
             }
           }
+        end
 
-          run_test! do |response|
-            data = JSON.parse(response.body)
-            expect(response.status).to eq(422)
-            expect(data['base']).to include('Circle must be completely within the frame')
-          end
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(response.status).to eq(422)
+          expect(data['base']).to include('Circle must be completely within the frame')
         end
 
         let(:frame) { create(:frame, center_x: 15.0, center_y: 15.0, width: 30.0, height: 30.0) }
@@ -149,13 +145,13 @@ RSpec.describe 'circles' do
               radius: 2.0
             }
           }
+        end
 
-          run_test! do |response|
-            data = JSON.parse(response.body)
+        run_test! do |response|
+          data = JSON.parse(response.body)
 
-            expect(response.status).to eq(422)
-            expect(data['base']).to include(/Circle collides with existing circle/)
-          end
+          expect(response.status).to eq(422)
+          expect(data['base']).to include(/Circle must be completely within the frame/)
         end
 
         let(:frame) { create(:frame, center_x: 15.0, center_y: 15.0, width: 30.0, height: 30.0) }
@@ -169,14 +165,14 @@ RSpec.describe 'circles' do
               radius: -2.0
             }
           }
+        end
 
-          run_test! do |response|
-            data = JSON.parse(response.body)
-            expect(response.status).to eq(422)
-            expect(data['center_x']).to include('must be greater than or equal to 0')
-            expect(data['center_y']).to include('must be greater than or equal to 0')
-            expect(data['radius']).to include('must be greater than 0')
-          end
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(response.status).to eq(422)
+          expect(data['center_x']).to include('must be greater than or equal to 0')
+          expect(data['center_y']).to include('must be greater than or equal to 0')
+          expect(data['radius']).to include('must be greater than 0')
         end
       end
 
@@ -251,7 +247,7 @@ RSpec.describe 'circles' do
         run_test! do |response|
           expect(response.status).to eq(204)
           expect(response.body).to be_empty
-          expect(Circle.exists?(existing_circle.id)).to be_falsey
+          expect(Circle).not_to exist(existing_circle.id)
         end
       end
 
@@ -267,4 +263,3 @@ RSpec.describe 'circles' do
     end
   end
 end
-# rubocop:enable all

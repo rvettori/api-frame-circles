@@ -2,8 +2,8 @@
 
 require 'swagger_helper'
 
-# rubocop:disable all
-RSpec.describe 'frames' do # rubocop:disable RSpec/DescribeClass
+# rubocop:disable RSpec/EmptyExampleGroup
+RSpec.describe 'frames', type: :request do
   path '/frames/{id}' do
     parameter name: 'id', in: :path, type: :integer, description: 'Frame ID'
 
@@ -180,12 +180,12 @@ RSpec.describe 'frames' do # rubocop:disable RSpec/DescribeClass
               ]
             }
           }
+        end
 
-          run_test! do |response|
-            data = JSON.parse(response.body)
-            expect(response.status).to eq(422)
-            expect(data).to have_key('circles.base')
-          end
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(response.status).to eq(422)
+          expect(data).to have_key('circles.base')
         end
       end
     end
@@ -307,4 +307,3 @@ RSpec.describe 'frames' do # rubocop:disable RSpec/DescribeClass
     end
   end
 end
-# rubocop:enable all
